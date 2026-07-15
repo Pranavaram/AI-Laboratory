@@ -1,0 +1,57 @@
+import heapq
+def a_star_search(graph, heuristics, start, goal):
+ 
+    priority_queue = []
+    heapq.heappush(priority_queue, (0 + heuristics[start], start))
+    g_score = {node: float('inf') for node in graph}
+    g_score[start] = 0
+
+    came_from = {}
+    
+    while priority_queue:
+  
+        current_f, current_node = heapq.heappop(priority_queue)
+    
+        if current_node == goal:
+            path = []
+            while current_node in came_from:
+                path.append(current_node)
+                current_node = came_from[current_node]
+            path.append(start)
+            return path[::-1]
+     
+        for neighbor, cost in graph[current_node].items():
+            tentative_g_score = g_score[current_node] + cost
+            
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current_node
+                g_score[neighbor] = tentative_g_score
+                f_score = tentative_g_score + heuristics[neighbor]
+                
+               
+                heapq.heappush(priority_queue, (f_score, neighbor))
+                
+    return None
+#Sample Graph for implementation
+example_graph = {
+    'A': {'B': 1, 'C': 3},
+    'B': {'E': 5, 'D': 1},
+    'C': {'F': 2},
+    'D': {'E': 4, 'F':2},
+    'E': {'F':1},
+    'F':{}
+}
+
+example_heuristics = {
+    'A': 7,
+    'B': 3,
+    'C': 4,
+    'D': 2,
+    'E': 1,
+    'F': 0
+}
+
+shortest_path = a_star_search(example_graph, example_heuristics, start='A', goal='F')
+print(f"The shortest path discovered by A* is: {shortest_path}")
+
+
