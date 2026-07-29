@@ -1,11 +1,15 @@
+
 import random
+
 
 class HillClimbingNQueens:
     def __init__(self, n=8, max_sideways=100):
         self.n = n
         self.max_sideways = max_sideways
+
     def generate_random_state(self):
         return [random.randint(0, self.n - 1) for _ in range(self.n)]
+
     def calculate_heuristic(self, state):
         conflicts = 0
         for i in range(self.n):
@@ -17,7 +21,7 @@ class HillClimbingNQueens:
         return conflicts
 
     def get_best_neighbor(self, current_state):
-          best_state = list(current_state)
+        best_state = list(current_state)
         best_h = self.calculate_heuristic(current_state)
 
         for col in range(self.n):
@@ -34,33 +38,39 @@ class HillClimbingNQueens:
                     best_state = neighbor
 
         return best_state, best_h
+
     def solve(self, max_restarts=50):
-               for restart in range(max_restarts):
+        for restart in range(max_restarts):
             current_state = self.generate_random_state()
             current_h = self.calculate_heuristic(current_state)
             sideways_moves = 0
+
             while True:
-                               if current_h == 0:
+                if current_h == 0:
                     return current_state, restart
 
-                neighbor_state, neighbor_h = self.get_best_neighbor(current_state)
+                neighbor_state, neighbor_h = self.get_best_neighbor(
+                    current_state
+                )
 
-                             if neighbor_h < current_h:
+                if neighbor_h < current_h:
                     current_state = neighbor_state
                     current_h = neighbor_h
                     sideways_moves = 0  # Reset plateau counter
-
-                        elif neighbor_h == current_h and sideways_moves < self.max_sideways:
+                elif (
+                    neighbor_h == current_h
+                    and sideways_moves < self.max_sideways
+                ):
                     current_state = neighbor_state
                     sideways_moves += 1
-               else:
+                else:
                     break
 
         return None, max_restarts
 
 
 def print_board(state):
-     n = len(state)
+    n = len(state)
     for row in range(n):
         line = ""
         for col in range(n):
